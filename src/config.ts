@@ -9,7 +9,7 @@ type Config = {
 
 export function setUser(userName: string) {
   const config = readConfig();
-  config.currentUserName = userName;
+  config.currentUserName = userName.trim();
   // const cfg: Config = {
   //   dbUrl: "postgres://example",
   //   currentUserName: user,
@@ -39,17 +39,15 @@ function writeConfig(config: Config): void {
 
 function validateConfig(rawConfig: any): Config {
   if (!rawConfig.db_url || typeof rawConfig.db_url !== "string") {
-    throw new Error("db_url is required");
+    throw new Error("db_url is required in config file");
   }
-
-  const current =
-    typeof rawConfig.current_user_name === "string"
-      ? rawConfig.current_user_name
-      : "";
 
   const config: Config = {
     dbUrl: rawConfig.db_url,
-    currentUserName: current,
+    currentUserName:
+      typeof rawConfig.current_user_name === "string"
+        ? rawConfig.current_user_name
+        : "",
   };
 
   return config;
