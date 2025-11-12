@@ -10,10 +10,6 @@ type Config = {
 export function setUser(userName: string) {
   const config = readConfig();
   config.currentUserName = userName.trim();
-  // const cfg: Config = {
-  //   dbUrl: "postgres://example",
-  //   currentUserName: user,
-  // };
   writeConfig(config);
 }
 
@@ -28,7 +24,6 @@ function getConfigFilePath(): string {
 }
 
 function writeConfig(config: Config): void {
-  // fs.writeFileSync(getConfigFilePath(), JSON.stringify(config));
   const rawConfig = {
     db_url: config.dbUrl,
     current_user_name: config.currentUserName,

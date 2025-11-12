@@ -8,7 +8,6 @@ import { handlerLogin, handlerRegister } from "./commands/users";
 async function main() {
   const args = process.argv.slice(2);
   if (args.length <= 0) {
-    // console.error("not enough arguments were provided");
     console.log("usage: cli <command> [args...]");
     process.exit(1);
   }

@@ -4,22 +4,39 @@ import { createUser, getUser } from "../lib/db/queries/users";
 
 export const handlerLogin: CommandHandler = async (cmdName, ...args) => {
   if (args.length < 1 || !args[0].trim()) {
-    // console.error("username required");
-    // process.exit(1);
     throw new Error(`usage: ${cmdName} <name>`);
   }
-  const result = await getUser(args[0].trim());
-  //   console.log("User has been set");
-  setUser(result.name);
-  console.log("User switched successfully");
+
+  const name = args[0].trim();
+  try {
+    const result = await getUser(name);
+
+    if (!result) {
+      throw new Error("User does not exist");
+    }
+
+    setUser(result.name);
+    console.log("User switched successfully");
+  } catch (error) {
+    throw error;
+  }
 };
 
 export const handlerRegister: CommandHandler = async (cmdName, ...args) => {
   if (args.length < 1 || !args[0].trim()) {
     throw new Error(`usage: ${cmdName} <name>`);
   }
-  const result = await createUser(args[0].trim());
-  console.log(`User ${result.name} registered successfully`);
-  console.log(result);
-  setUser(result.name);
+  const name = args[0].trim();
+  try {
+    const result = await createUser(name);
+
+    if (!result) {
+      throw new Error("User already exists");
+    }
+
+    setUser(result.name);
+    console.log(`User ${result.name} registered successfully`);
+  } catch (error) {
+    throw error;
+  }
 };
