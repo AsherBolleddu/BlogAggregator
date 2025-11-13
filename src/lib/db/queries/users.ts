@@ -27,10 +27,7 @@ export async function deleteUsers() {
   await db.delete(users);
 }
 
-// export async function getUserById(name: string) {
-//   const [result] = await db
-//     .select({ id: users.id })
-//     .from(users)
-//     .where(eq(users.name, name));
-//   return result;
-// }
+export async function getUserById(id: string) {
+  const [result] = await db.select().from(users).where(eq(users.id, id));
+  return result;
+}

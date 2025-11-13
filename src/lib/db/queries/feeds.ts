@@ -11,3 +11,7 @@ export async function createFeed(name: string, url: string, user_id: string) {
     .returning();
   return result;
 }
+
+export async function getFeeds() {
+  return db.select().from(feeds);
+}

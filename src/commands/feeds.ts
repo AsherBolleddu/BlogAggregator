@@ -1,6 +1,6 @@
-import { getUserByName } from "../lib/db/queries/users";
+import { getUserById, getUserByName } from "../lib/db/queries/users";
 import { readConfig } from "../config";
-import { createFeed } from "../lib/db/queries/feeds";
+import { createFeed, getFeeds } from "../lib/db/queries/feeds";
 import { feeds, users } from "../lib/db/schema";
 import { CommandHandler } from "./commands";
 
@@ -29,6 +29,31 @@ export const handlerAddFeed: CommandHandler = async (cmdName, ...args) => {
 
   console.log("Feed created successfully:");
   printFeed(feed, user);
+};
+
+export const handlerListFeeds: CommandHandler = async () => {
+  const feeds = await getFeeds();
+
+  if (!feeds.length) {
+    throw new Error("No feeds exist");
+  }
+
+  for (let i = 0; i < feeds.length; i++) {
+    const feed = feeds[i];
+    const user = await getUserById(feed.user_id);
+
+    if (!user) {
+      throw new Error(`User not found for ${feed.user_id}`);
+    }
+
+    console.log(`* name:          ${feed.name}`);
+    console.log(`* URL:           ${feed.url}`);
+    console.log(`* User:          ${user.name}`);
+
+    if (i < feeds.length - 1) {
+      console.log();
+    }
+  }
 };
 
 function printFeed(feed: Feed, user: User) {
