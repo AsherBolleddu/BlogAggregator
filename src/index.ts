@@ -9,9 +9,11 @@ import {
   handlerRegister,
 } from "./commands/users";
 import { handlerReset } from "./commands/reset";
+import { handlerAgg } from "./commands/agg";
 
 async function main() {
   const args = process.argv.slice(2);
+
   if (args.length <= 0) {
     console.log("usage: cli <command> [args...]");
     process.exit(1);
@@ -25,6 +27,7 @@ async function main() {
   registerCommand(commandsRegistry, "register", handlerRegister);
   registerCommand(commandsRegistry, "reset", handlerReset);
   registerCommand(commandsRegistry, "users", handlerListUsers);
+  registerCommand(commandsRegistry, "agg", handlerAgg);
 
   try {
     await runCommand(commandsRegistry, cmdName, ...cmdArgs);
@@ -36,7 +39,6 @@ async function main() {
     }
     process.exit(1);
   }
-
   process.exit(0);
 }
 
