@@ -1,6 +1,6 @@
 import { type CommandHandler } from "./commands";
 import { readConfig, setUser } from "../config";
-import { createUser, getUser, getUsers } from "../lib/db/queries/users";
+import { createUser, getUserByName, getUsers } from "../lib/db/queries/users";
 
 export const handlerLogin: CommandHandler = async (cmdName, ...args) => {
   if (args.length != 1 || !args[0].trim()) {
@@ -9,7 +9,7 @@ export const handlerLogin: CommandHandler = async (cmdName, ...args) => {
 
   const name = args[0].trim();
   try {
-    const result = await getUser(name);
+    const result = await getUserByName(name);
 
     if (!result) {
       throw new Error("User does not exist");
