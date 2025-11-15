@@ -1,3 +1,4 @@
+import { eq } from "drizzle-orm";
 import { db } from "..";
 import { feeds } from "../schema";
 
@@ -6,7 +7,7 @@ export async function createFeed(name: string, url: string, user_id: string) {
     .insert(feeds)
     .values({ name, url, user_id })
     .onConflictDoNothing({
-      target: feeds.url,
+      target: [feeds.url, feeds.name, feeds.user_id],
     })
     .returning();
   return result;
@@ -14,4 +15,9 @@ export async function createFeed(name: string, url: string, user_id: string) {
 
 export async function getFeeds() {
   return db.select().from(feeds);
+}
+
+export async function getFeedByUrl(url: string) {
+  const [result] = await db.select().from(feeds).where(eq(feeds.url, url));
+  return result;
 }

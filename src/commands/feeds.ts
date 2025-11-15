@@ -1,11 +1,8 @@
 import { getUserById, getUserByName } from "../lib/db/queries/users";
 import { readConfig } from "../config";
 import { createFeed, getFeeds } from "../lib/db/queries/feeds";
-import { feeds, users } from "../lib/db/schema";
+import { Feed, User } from "../lib/db/schema";
 import { CommandHandler } from "./commands";
-
-export type Feed = typeof feeds.$inferSelect; // feeds is the table object in schema.ts
-export type User = typeof users.$inferSelect;
 
 export const handlerAddFeed: CommandHandler = async (cmdName, ...args) => {
   if (args.length !== 2) {
