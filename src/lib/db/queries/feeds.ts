@@ -7,7 +7,7 @@ export async function createFeed(name: string, url: string, user_id: string) {
     .insert(feeds)
     .values({ name, url, user_id })
     .onConflictDoNothing({
-      target: [feeds.url, feeds.name, feeds.user_id],
+      target: feeds.url,
     })
     .returning();
   return result;

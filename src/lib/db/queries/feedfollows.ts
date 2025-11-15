@@ -1,6 +1,7 @@
 import { feed_follows, feeds, users } from "../schema";
 import { db } from "..";
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
+import { getFeedByUrl } from "./feeds";
 
 export async function createFeedFollow(user_id: string, feed_id: string) {
   const [result] = await db
@@ -10,8 +11,6 @@ export async function createFeedFollow(user_id: string, feed_id: string) {
       target: [feed_follows.feed_id, feed_follows.user_id],
     })
     .returning();
-
-  console.log(result);
 
   const [getRelatedFeeds] = await db
     .select({
@@ -23,10 +22,33 @@ export async function createFeedFollow(user_id: string, feed_id: string) {
     })
     .from(feed_follows)
     .innerJoin(feeds, eq(feeds.id, feed_follows.feed_id))
-    .innerJoin(users, eq(users.id, feed_follows.user_id));
+    .innerJoin(users, eq(users.id, feed_follows.user_id))
+    .where(eq(feed_follows.id, result.id));
 
-  console.log(getRelatedFeeds);
   return getRelatedFeeds;
 }
 
-export async function getFeedFollowsForUser(name: string) {}
+export async function getFeedFollowsForUser(user_id: string) {
+  const result = await db
+    .select({
+      userName: users.name,
+      feedName: feeds.name,
+    })
+    .from(feed_follows)
+    .innerJoin(users, eq(feed_follows.user_id, users.id))
+    .innerJoin(feeds, eq(feed_follows.feed_id, feeds.id))
+    .where(eq(feed_follows.user_id, user_id));
+
+  return result;
+}
+
+export async function deleteFeedFollow(user_id: string, feed_id: string) {
+  const [result] = await db
+    .delete(feed_follows)
+    .where(
+      and(eq(feed_follows.user_id, user_id), eq(feed_follows.feed_id, feed_id))
+    )
+    .returning();
+
+  return result;
+}
